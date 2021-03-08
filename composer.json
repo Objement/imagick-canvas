@@ -1,0 +1,24 @@
+{
+  "name": "objement/imagick-canvas",
+  "description": "Library to easily generate Imagick graphics containing pictures, texts and shapes.",
+  "minimum-stability": "stable",
+  "license": "MPL-2.0",
+  "authors": [
+    {
+      "name": "Kevin Glier",
+      "email": "github@objement.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "ext-imagick": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Objement\\OmImagickCanvas\\": "source/"
+    }
+  }
+}
