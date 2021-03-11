@@ -18,6 +18,8 @@ class OmUnit
      */
     const UNIT_PIXELS = 'px';
 
+    const UNIT_POINTS = 'pt';
+
     /**
      * @var string
      */
@@ -64,7 +66,8 @@ class OmUnit
         $units = [
             'cm' => self::UNIT_CENTIMETERS,
             'mm' => self::UNIT_MILLIMETERS,
-            'px' => self::UNIT_PIXELS
+            'px' => self::UNIT_PIXELS,
+            'pt' => self::UNIT_POINTS
         ];
 
         if (isset($units[$unitName]))
@@ -92,12 +95,14 @@ class OmUnit
     public function toPixel(int $resolution): int
     {
         switch ($this->unit) {
+            case self::UNIT_PIXELS:
+                return $this->value;
             case self::UNIT_CENTIMETERS:
                 return $this->value * ($resolution / 2.54);
             case self::UNIT_MILLIMETERS:
                 return $this->value / 10 * ($resolution / 2.54);
-            case self::UNIT_PIXELS:
-                return $this->value;
+            case self::UNIT_POINTS:
+                return $this->value * ($resolution / 72);
         }
         trigger_error('Unknown resolution.', E_USER_ERROR);
         return -1;
