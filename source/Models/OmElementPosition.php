@@ -51,12 +51,8 @@ class OmElementPosition
      */
     public static function create($unitName, $x, $y, ?int $relativeTo = self::TOPLEFT, ?int $align = self::TOPLEFT): ?OmElementPosition
     {
-        try {
-            $unitX = OmUnit::create($unitName, $x);
-            $unitY = OmUnit::create($unitName, $y);
-        } catch (OmUnitUnknownException $e) {
-            return null;
-        }
+        $unitX = OmUnit::create($unitName, $x);
+        $unitY = OmUnit::create($unitName, $y);
 
         return new OmElementPosition($unitX, $unitY, $relativeTo, $align);
     }
@@ -67,7 +63,7 @@ class OmElementPosition
      * @param OmUnit|null $containerWidth
      * @return int
      */
-    public function getX(int $resolution, ?OmUnit $width= null, ?OmUnit $containerWidth = null): int
+    public function getX(int $resolution, ?OmUnit $width = null, ?OmUnit $containerWidth = null): int
     {
         if ($containerWidth !== null) {
             switch ($this->relativeTo) {
@@ -91,7 +87,7 @@ class OmElementPosition
      * @param OmUnit|null $containerHeight
      * @return int
      */
-    public function getY(int $resolution, ?OmUnit $height=null, ?OmUnit $containerHeight = null): int
+    public function getY(int $resolution, ?OmUnit $height = null, ?OmUnit $containerHeight = null): int
     {
         if ($containerHeight !== null) {
             switch ($this->relativeTo) {
