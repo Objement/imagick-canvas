@@ -9,5 +9,5 @@ interface OmElementContainerInterface
 {
     public function addElement(OmElementInterface $element, OmElementPosition $position);
 
-    public function getImage($format);
+    public function getImagick(int $resolution);
 }
