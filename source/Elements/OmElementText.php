@@ -9,6 +9,7 @@ use ImagickPixel;
 use Objement\OmImagickCanvas\Elements\Settings\OmElementTextSettings;
 use Objement\OmImagickCanvas\Interfaces\OmElementInterface;
 use Objement\OmImagickCanvas\Models\OmUnit;
+use Objement\OmImagickCanvas\OmCanvas;
 
 class OmElementText implements OmElementInterface
 {
@@ -36,23 +37,22 @@ class OmElementText implements OmElementInterface
     }
 
     /**
-     * @return Imagick
-     * @throws ImagickException
+     * @inheritDoc
      */
-    public function getImagick(int $resolution): Imagick
+    public function getImagick(?int $resolution = 72, ?int $colorSpace = OmCanvas::COLORSPACE_RGB): Imagick
     {
-        /* Create a new Imagick object */
         $im = new Imagick();
-        $im->setResolution($resolution,$resolution);
+        $im->setResolution($resolution, $resolution);
         $im->newImage($this->getWidth()->toPixel($resolution), $this->getHeight()->toPixel($resolution), new ImagickPixel('transparent'));
+        $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
 
         $draw = new ImagickDraw();
-        $draw->setResolution($resolution,$resolution);
-
-        /* Set the font */
-        $draw->setFont($this->settings->getFontFile());
-        $draw->setFontSize($this->settings->getFontSize()->toPixel(72)); // needs to be 72dpi, because Imagick will do the calculation because of $draw->setResolution
+        $draw->setResolution($resolution, $resolution);
         $draw->setGravity(imagick::GRAVITY_NORTHWEST);
+
+        $draw->setFont($this->settings->getFontFile());
+        $draw->setFontSize($this->settings->getFontSize()->toPixel(72)); // needs to be 72dpi, because Imagick will do the calculation therefore $draw->setResolution is set to the target resolution
+        $draw->setFontWeight($this->settings->isBold() ? 600 : 100);
 
         /* Dump the font metrics, autodetect multiline */
         $fontMetrics = $im->queryFontMetrics($draw, $this->text);
