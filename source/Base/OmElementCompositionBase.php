@@ -11,8 +11,9 @@ use Objement\OmImagickCanvas\Interfaces\OmElementInterface;
 use Objement\OmImagickCanvas\Models\OmElementDrawMeta;
 use Objement\OmImagickCanvas\Models\OmElementPosition;
 use Objement\OmImagickCanvas\Models\OmUnit;
+use Objement\OmImagickCanvas\OmCanvas;
 
-class OmElementCompositionBase implements OmElementContainerInterface
+abstract class OmElementCompositionBase implements OmElementContainerInterface, OmElementInterface
 {
     /**
      * Default resolution of 72 pixels per inch. It is a default value for normal computer displays. For 4K
@@ -68,10 +69,9 @@ class OmElementCompositionBase implements OmElementContainerInterface
     }
 
     /**
-     * @return Imagick
-     * @throws ImagickException
+     * @inheritDoc
      */
-    public function getImagick(int $resolution): Imagick
+    public function getImagick(?int $resolution=72, ?int $colorSpace=OmCanvas::COLORSPACE_RGB): Imagick
     {
         $this->generateImage();
 
@@ -111,35 +111,39 @@ class OmElementCompositionBase implements OmElementContainerInterface
         $this->imagickCanvas->setResolution($this->resolution, $this->resolution);
         $this->imagickCanvas->newImage($this->width->toPixel($this->resolution), $this->height->toPixel($this->resolution), 'white');
         $this->imagickCanvas->setImageUnits(imagick::RESOLUTION_PIXELSPERINCH);
-        $colorSpace = $this->getImagickColorSpace();
 
-        $this->imagickCanvas->transformImageColorspace($colorSpace);
+
+        $imagickTargetColorspace = self::getImagickColorSpace($this->colorSpace);
+        $this->imagickCanvas->transformImageColorspace($imagickTargetColorspace);
 
         foreach ($generatedSubImages as $image) {
             $this->imagickCanvas->compositeImage($image['imagick'], Imagick::COMPOSITE_OVER, $image['position']['x'], $image['position']['y']);
         }
     }
 
-    private function getImagickColorSpace()
+    /**
+     * Converts the OmCanvas-Colorspace constants to the imagick ones.
+     * @param int $colorSpace
+     * @return int
+     */
+    public static function getImagickColorSpace(int $colorSpace)
     {
-        switch ($this->colorSpace) {
+        switch ($colorSpace) {
             case self::COLORSPACE_CMYK:
-                $colorSpace = Imagick::COLORSPACE_CMYK;
+                $imColorSpace = Imagick::COLORSPACE_CMYK;
                 break;
             case self::COLORSPACE_RGB:
             default:
-                $colorSpace = Imagick::COLORSPACE_RGB;
+                $imColorSpace = Imagick::COLORSPACE_RGB;
                 break;
         }
-        return $colorSpace;
+        return $imColorSpace;
     }
 
     protected function generateImageForElement(OmElementInterface $element, OmElementPosition $position): Imagick
     {
-        $im = $element->getImagick($this->resolution);
-        if ($element instanceof OmElementImage) {
-            $im->transformImageColorspace($this->getImagickColorSpace());
-        }
+        $im = $element->getImagick($this->resolution, $this->colorSpace);
+        $im->transformImageColorspace($this->getImagickColorSpace($this->colorSpace));
 
         return $im;
     }

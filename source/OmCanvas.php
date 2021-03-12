@@ -46,13 +46,28 @@ class OmCanvas extends OmElementCompositionBase
      * Returns the generated image in the specified format.
      * @param $format
      * @return Imagick
-     * @throws ImagickException
      */
     public function getImage($format)
     {
-        $im = $this->getImagick($this->resolution);
+        $im = $this->getImagick();
 
         $im->setImageFormat($format);
         return $im;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWidth(): OmUnit
+    {
+        return $this->width;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHeight(): OmUnit
+    {
+        return $this->height;
     }
 }

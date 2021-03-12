@@ -23,8 +23,8 @@ class OmUnit
     /**
      * @var string
      */
-    private $unit;
-    private $value;
+    private string $unit;
+    private float $value;
 
     /**
      * OmUnit constructor.

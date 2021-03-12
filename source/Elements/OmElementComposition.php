@@ -15,7 +15,7 @@ use Objement\OmImagickCanvas\Models\OmUnit;
  * expand automatically to its contents.
  * @package Objement\OmImagickCanvas\Elements
  */
-class OmElementComposition extends OmElementCompositionBase implements OmElementInterface
+class OmElementComposition extends OmElementCompositionBase
 {
     /**
      * @var OmUnit|null
@@ -28,6 +28,8 @@ class OmElementComposition extends OmElementCompositionBase implements OmElement
 
     /**
      * OmElementComposition constructor.
+     * @param int $resolution
+     * @param int $colorSpace
      * @param OmUnit|null $maxWidth Maximum width of this image. Optional.
      * @param OmUnit|null $maxHeight Maximum height of this image. Optional.
      * @throws ImagickException
@@ -66,11 +68,8 @@ class OmElementComposition extends OmElementCompositionBase implements OmElement
 
     protected function generateImageForElement(OmElementInterface $element, OmElementPosition $position): Imagick
     {
-
         $im = parent::generateImageForElement($element, $position);
 
-        // Resolution 72, because Imagick works internally with the default screen resolution.
-        // This is very important to respect in the following line!
         $bottomRightEdgePosition = $position->getPositionForCorner($this->resolution, OmElementPosition::BOTTOMRIGHT, OmUnit::create('px', $im->getImageWidth()), OmUnit::create('px', $im->getImageHeight()));
 
         if (!$this->width || $bottomRightEdgePosition->getX($this->resolution) > $this->width->toPixel($this->resolution))

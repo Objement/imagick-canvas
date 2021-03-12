@@ -25,10 +25,6 @@ class OmElementPosition
      * OmElementPosition constructor.
      * @param OmUnit $x
      * @param OmUnit $y
-     * @param OmUnit $width
-     * @param OmUnit $height
-     * @param OmUnit|null $containerWidth
-     * @param OmUnit|null $containerHeight
      * @param int $relativeTo
      * @param int $align
      */

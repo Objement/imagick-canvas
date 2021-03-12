@@ -8,6 +8,4 @@ use Objement\OmImagickCanvas\Models\OmElementPosition;
 interface OmElementContainerInterface
 {
     public function addElement(OmElementInterface $element, OmElementPosition $position);
-
-    public function getImagick(int $resolution);
 }

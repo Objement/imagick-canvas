@@ -16,6 +16,10 @@ class OmElementTextSettings
     private OmUnit $fontSize;
 
     private OmUnit $lineHeight;
+    /**
+     * @var bool
+     */
+    private bool $isBold;
 
     /**
      * OmElementTextSettings constructor.
@@ -61,5 +65,23 @@ class OmElementTextSettings
     public function getFontSize(): OmUnit
     {
         return $this->fontSize;
+    }
+
+    /**
+     * @param bool $isBold
+     * @return OmElementTextSettings
+     */
+    public function setBold(bool $isBold)
+    {
+        $this->isBold = $isBold;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBold(): bool
+    {
+        return $this->isBold;
     }
 }
