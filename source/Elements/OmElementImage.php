@@ -3,7 +3,6 @@
 namespace Objement\OmImagickCanvas\Elements;
 
 use Imagick;
-use ImagickException;
 use Objement\OmImagickCanvas\Interfaces\OmElementInterface;
 use Objement\OmImagickCanvas\Models\OmUnit;
 use Objement\OmImagickCanvas\OmCanvas;

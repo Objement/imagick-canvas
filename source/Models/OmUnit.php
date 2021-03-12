@@ -2,7 +2,6 @@
 
 namespace Objement\OmImagickCanvas\Models;
 
-use Exception;
 use Objement\OmImagickCanvas\Exceptions\OmUnitUnknownException;
 
 /**

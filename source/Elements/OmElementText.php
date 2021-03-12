@@ -4,7 +4,6 @@ namespace Objement\OmImagickCanvas\Elements;
 
 use Imagick;
 use ImagickDraw;
-use ImagickException;
 use ImagickPixel;
 use Objement\OmImagickCanvas\Elements\Settings\OmElementTextSettings;
 use Objement\OmImagickCanvas\Interfaces\OmElementInterface;

@@ -4,8 +4,6 @@ namespace Objement\OmImagickCanvas\Base;
 
 use Imagick;
 use ImagickException;
-use Objement\OmImagickCanvas\Elements\OmElementComposition;
-use Objement\OmImagickCanvas\Elements\OmElementImage;
 use Objement\OmImagickCanvas\Interfaces\OmElementContainerInterface;
 use Objement\OmImagickCanvas\Interfaces\OmElementInterface;
 use Objement\OmImagickCanvas\Models\OmElementDrawMeta;

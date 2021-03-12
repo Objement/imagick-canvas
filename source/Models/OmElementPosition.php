@@ -2,9 +2,6 @@
 
 namespace Objement\OmImagickCanvas\Models;
 
-use Imagick;
-use Objement\OmImagickCanvas\Exceptions\OmUnitUnknownException;
-
 /**
  * Describes the position of an element.
  * @package Objement\OmImagickCanvas\Models
