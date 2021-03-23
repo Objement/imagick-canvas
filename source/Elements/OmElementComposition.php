@@ -36,7 +36,7 @@ class OmElementComposition extends OmElementCompositionBase
      */
     public function __construct(int $resolution, int $colorSpace, ?OmUnit $maxWidth = null, ?OmUnit $maxHeight = null)
     {
-        parent::__construct($resolution, $colorSpace, $maxWidth, $maxHeight);
+        parent::__construct($resolution, $colorSpace, OmUnit::create('px', 0), OmUnit::create('px', 0));
 
         $this->maxWidth = $maxWidth;
         $this->maxHeight = $maxHeight;
@@ -44,7 +44,6 @@ class OmElementComposition extends OmElementCompositionBase
 
     /**
      * @inheritDoc
-     * @throws Exception
      */
     public function getWidth(): OmUnit
     {
@@ -56,7 +55,6 @@ class OmElementComposition extends OmElementCompositionBase
 
     /**
      * @inheritDoc
-     * @throws Exception
      */
     public function getHeight(): OmUnit
     {

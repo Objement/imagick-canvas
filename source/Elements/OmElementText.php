@@ -20,6 +20,8 @@ class OmElementText implements OmElementInterface
      */
     private OmElementTextSettings $settings;
 
+    private Imagick $imagick;
+
     /**
      * OmElementImage constructor.
      * @param string $text
@@ -27,10 +29,10 @@ class OmElementText implements OmElementInterface
      * @param OmUnit $height
      * @param OmElementTextSettings $settings
      */
-    public function __construct(string $text, OmUnit $width, OmUnit $height, OmElementTextSettings $settings)
+    public function __construct(string $text, ?OmUnit $width, ?OmUnit $height, OmElementTextSettings $settings)
     {
-        $this->width = $width;
-        $this->height = $height;
+        $this->width = $width ?? OmUnit::auto();
+        $this->height = $height ?? OmUnit::auto();
         $this->text = $text;
         $this->settings = $settings;
     }
@@ -42,22 +44,54 @@ class OmElementText implements OmElementInterface
     {
         $im = new Imagick();
         $im->setResolution($resolution, $resolution);
-        $im->newImage($this->getWidth()->toPixel($resolution), $this->getHeight()->toPixel($resolution), new ImagickPixel('transparent'));
-        $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
 
         $draw = new ImagickDraw();
         $draw->setResolution($resolution, $resolution);
         $draw->setGravity(imagick::GRAVITY_NORTHWEST);
-
         $draw->setFont($this->settings->getFontFile());
         $draw->setFontSize($this->settings->getFontSize()->toPixel(72)); // needs to be 72dpi, because Imagick will do the calculation therefore $draw->setResolution is set to the target resolution
         $draw->setFontWeight($this->settings->isBold() ? 600 : 100);
 
-        /* Dump the font metrics, autodetect multiline */
-        $fontMetrics = $im->queryFontMetrics($draw, $this->text);
 
-        //$im->setSize($fontMetrics['textWidth'], $fontMetrics['textHeight']);
-        $im->annotateImage($draw, 0, 0, 0, $this->text);
+        $fontMetrics = $im->queryFontMetrics($draw, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ', false);
+        $lineHeight = $fontMetrics['textHeight'] + $fontMetrics['descender'];
+
+        $maxWidth = !$this->width->isAuto() ? $this->getWidth()->toPixel($resolution) : 0;
+        $maxHeight = !$this->height->isAuto() ? $this->getHeight()->toPixel($resolution) : 0;
+        $linesInfo = [];
+
+        $y = 1 + $fontMetrics['descender'];
+
+        foreach (explode("\n", $this->text) as $line) {
+
+            $fontMetrics = $im->queryFontMetrics($draw, $line, false);
+            $lineWidth = $fontMetrics['textWidth'] + 2 * $fontMetrics['boundingBox']['x1'];
+            if ($this->width->isAuto() && $lineWidth > $maxWidth) {
+                $maxWidth = $lineWidth;
+            }
+            if ($this->height->isAuto()) {
+                $maxHeight += $lineHeight;
+            }
+
+            $lineInfo = [
+                'text' => $line,
+                'y' => $y
+            ];
+
+            $y += $lineHeight;
+
+            $linesInfo[] = $lineInfo;
+        }
+
+        $im->newImage($maxWidth, $maxHeight, new ImagickPixel('transparent'));
+        $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
+
+        foreach ($linesInfo as $lineInfo) {
+            $im->annotateImage($draw, 0, $lineInfo['y'], 0, $lineInfo['text']);
+        }
+        
+        $this->imagick = $im;
+
         return $im;
     }
 
@@ -66,6 +100,9 @@ class OmElementText implements OmElementInterface
      */
     public function getWidth(): OmUnit
     {
+        if ($this->width->isAuto())
+            return OmUnit::create('px', $this->imagick->getImageWidth());
+
         return $this->width;
     }
 
@@ -74,6 +111,9 @@ class OmElementText implements OmElementInterface
      */
     public function getHeight(): OmUnit
     {
+        if ($this->height->isAuto())
+            return OmUnit::create('px', $this->imagick->getImageHeight());
+
         return $this->height;
     }
 }

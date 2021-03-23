@@ -15,11 +15,10 @@ class OmElementTextSettings
      */
     private OmUnit $fontSize;
 
-    private OmUnit $lineHeight;
     /**
      * @var bool
      */
-    private bool $isBold;
+    private bool $isBold = false;
 
     /**
      * OmElementTextSettings constructor.
@@ -33,23 +32,6 @@ class OmElementTextSettings
         $this->fontSize = $fontSize;
     }
 
-    /**
-     * @return OmUnit
-     */
-    public function getLineHeight(): OmUnit
-    {
-        return $this->lineHeight;
-    }
-
-    /**
-     * @param OmUnit $lineHeight
-     * @return OmElementTextSettings
-     */
-    public function setLineHeight(OmUnit $lineHeight): self
-    {
-        $this->lineHeight = $lineHeight;
-        return $this;
-    }
 
     /**
      * @return string

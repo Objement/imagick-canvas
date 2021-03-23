@@ -10,6 +10,8 @@ use Objement\OmImagickCanvas\Exceptions\OmUnitUnknownException;
  */
 class OmUnit
 {
+    const UNIT_AUTO = 'auto';
+
     const UNIT_CENTIMETERS = 'cm';
     const UNIT_MILLIMETERS = 'mm';
     /**
@@ -31,7 +33,7 @@ class OmUnit
      * @param float $value
      * @throws OmUnitUnknownException
      */
-    public function __construct(string $unit, float $value)
+    public function __construct(string $unit, float $value = 0)
     {
         $unitConstant = self::stringToConstant($unit);
         if (!$unitConstant)
@@ -60,9 +62,22 @@ class OmUnit
         }
     }
 
+    /**
+     * Create a unit object which size defines automatically.
+     */
+    public static function auto(): ?OmUnit
+    {
+        try {
+            return new OmUnit('auto', -1);
+        } catch (OmUnitUnknownException $e) {
+            return null;
+        }
+    }
+
     private static function stringToConstant($unitName): ?string
     {
         $units = [
+            'auto' => self::UNIT_AUTO,
             'cm' => self::UNIT_CENTIMETERS,
             'mm' => self::UNIT_MILLIMETERS,
             'px' => self::UNIT_PIXELS,
@@ -93,6 +108,9 @@ class OmUnit
 
     public function toPixel(int $resolution): int
     {
+        if ($this->unit == 'auto')
+            return -1;
+
         switch ($this->unit) {
             case self::UNIT_PIXELS:
                 return $this->value;
@@ -105,5 +123,18 @@ class OmUnit
         }
         trigger_error('Unknown resolution.', E_USER_ERROR);
         return -1;
+    }
+
+    public function __toString()
+    {
+        if ($this->unit == 'auto')
+            return 'auto';
+
+        return $this->getValue() . $this->getUnit();
+    }
+
+    public function isAuto()
+    {
+        return $this->unit == 'auto';
     }
 }
