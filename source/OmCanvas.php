@@ -32,10 +32,10 @@ class OmCanvas extends OmElementCompositionBase
      * Returns an composition element.
      * @return OmElementComposition|null
      */
-    public function createCompositionElement(): ?OmElementComposition
+    public function createCompositionElement(?OmUnit $maxWidth=null, ?OmUnit $maxHeight=null): ?OmElementComposition
     {
         try {
-            $composition = new OmElementComposition($this->resolution, $this->colorSpace);
+            $composition = new OmElementComposition($this->resolution, $this->colorSpace, $maxWidth, $maxHeight);
         } catch (ImagickException $e) {
             return null;
         }

@@ -52,9 +52,12 @@ class OmElementText implements OmElementInterface
         $draw->setFontSize($this->settings->getFontSize()->toPixel(72)); // needs to be 72dpi, because Imagick will do the calculation therefore $draw->setResolution is set to the target resolution
         $draw->setFontWeight($this->settings->isBold() ? 600 : 100);
 
+        $color = new ImagickPixel('#' . $this->settings->getColorHex());
+        $draw->setFillColor($color);
 
         $fontMetrics = $im->queryFontMetrics($draw, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ', false);
         $lineHeight = $fontMetrics['textHeight'] + $fontMetrics['descender'];
+        $lineHeight *= $this->settings->getLineHeight();
 
         $maxWidth = !$this->width->isAuto() ? $this->getWidth()->toPixel($resolution) : 0;
         $maxHeight = !$this->height->isAuto() ? $this->getHeight()->toPixel($resolution) : 0;
@@ -84,12 +87,13 @@ class OmElementText implements OmElementInterface
         }
 
         $im->newImage($maxWidth, $maxHeight, new ImagickPixel('transparent'));
-        $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
 
         foreach ($linesInfo as $lineInfo) {
             $im->annotateImage($draw, 0, $lineInfo['y'], 0, $lineInfo['text']);
         }
-        
+
+        $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
+
         $this->imagick = $im;
 
         return $im;

@@ -106,6 +106,46 @@ class OmUnit
         return $this->value;
     }
 
+    /**
+     * @param float $value Adds the given amount to the value.
+     * @return OmUnit
+     */
+    public function add(float $value): OmUnit
+    {
+        $this->value += $value;
+        return $this;
+    }
+
+    /**
+     * @param float $value Subtracts the given amount from the value.
+     * @return OmUnit
+     */
+    public function subtract(float $value): OmUnit
+    {
+        $this->value -= $value;
+        return $this;
+    }
+
+    /**
+     * @param float $value Divides the the value by the given amount.
+     * @return OmUnit
+     */
+    public function divide(float $value): OmUnit
+    {
+        $this->value /= $value;
+        return $this;
+    }
+
+    /**
+     * @param float $value Multiplies the given amount by the value.
+     * @return OmUnit
+     */
+    public function multiply(float $value): OmUnit
+    {
+        $this->value *= $value;
+        return $this;
+    }
+
     public function toPixel(int $resolution): int
     {
         if ($this->unit == 'auto')
