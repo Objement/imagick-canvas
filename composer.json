@@ -15,7 +15,7 @@
       "phpunit"
     ],
     "clearCache": "rm -rf cache/*"
-  }
+  },
   "require": {
     "php": ">=7.4",
     "ext-imagick": "*"
