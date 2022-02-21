@@ -11,11 +11,11 @@ final class OmElementTextTest extends TestCase
 {
     public function testWhenSizesAreSetToAutoTheDimensionsMustBeDefinedByTheText(): void
     {
-        $textSettings = new OmElementTextSettings('Arial', OmUnit::create('px', 16));
+        $textSettings = new OmElementTextSettings(__DIR__.'/Roboto-Regular.ttf', OmUnit::create('px', 16));
         $text = new OmElementText("That is a\ntest text that\nused multiple lines.", OmUnit::auto(), OmUnit::auto(), $textSettings);
         $text->getImagick();
 
-        $this->assertEquals('139px', (string)$text->getWidth());
-        $this->assertEquals('42px', (string)$text->getHeight());
+        $this->assertEquals('138px', (string)$text->getWidth());
+        $this->assertEquals('45px', (string)$text->getHeight());
     }
 }

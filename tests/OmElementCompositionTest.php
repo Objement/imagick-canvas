@@ -18,13 +18,13 @@ final class OmElementCompositionTest extends TestCase
             OmUnit::create('px', 400),
             OmUnit::create('px', 400)
         );
-        $textSettings = new OmElementTextSettings('Arial', OmUnit::create('px', 16));
+        $textSettings = new OmElementTextSettings(__DIR__.'/Roboto-Regular.ttf', OmUnit::create('px', 16));
         $text = new OmElementText("That is a\ntest text that\nused multiple lines.", OmUnit::auto(), OmUnit::auto(), $textSettings);
 
         $composition->addElement($text, OmElementPosition::create('px', 0, 0));
         $composition->getImagick();
 
-        $this->assertEquals('139px', (string)$composition->getWidth());
-        $this->assertEquals('42px', (string)$composition->getHeight());
+        $this->assertEquals('138px', (string)$composition->getWidth());
+        $this->assertEquals('45px', (string)$composition->getHeight());
     }
 }
