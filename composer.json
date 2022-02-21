@@ -12,7 +12,7 @@
   "scripts": {
     "test": [
       "@clearCache",
-      "phpunit"
+      "phpunit --colors=always --verbose tests/"
     ],
     "clearCache": "rm -rf cache/*"
   },
