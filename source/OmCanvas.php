@@ -44,13 +44,12 @@ class OmCanvas extends OmElementCompositionBase
 
     /**
      * Returns the generated image in the specified format.
-     * @param $format
+     * @param string $format png, jpeg...
      * @return Imagick
      */
-    public function getImage($format)
+    public function getImage(string $format)
     {
         $im = $this->getImagick();
-
         $im->setImageFormat($format);
         return $im;
     }

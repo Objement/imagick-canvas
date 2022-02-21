@@ -36,13 +36,13 @@ class OmElementPosition
     /**
      * An easy way to retrieve a position object.
      * @param $unitName
-     * @param $x
-     * @param $y
+     * @param float $x
+     * @param float $y
      * @param int|null $relativeTo
      * @param int|null $align
      * @return OmElementPosition|null
      */
-    public static function create($unitName, $x, $y, ?int $relativeTo = self::TOPLEFT, ?int $align = self::TOPLEFT): ?OmElementPosition
+    public static function create($unitName, float $x, float $y, ?int $relativeTo = self::TOPLEFT, ?int $align = self::TOPLEFT): ?OmElementPosition
     {
         $unitX = OmUnit::create($unitName, $x);
         $unitY = OmUnit::create($unitName, $y);
