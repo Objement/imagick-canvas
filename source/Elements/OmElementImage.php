@@ -16,14 +16,25 @@ class OmElementImage implements OmElementInterface
     /**
      * OmElementImage constructor.
      * @param $sourceFile
-     * @param OmUnit $width
-     * @param OmUnit $height
+     * @param OmUnit|null $width
+     * @param OmUnit|null $height
      */
-    public function __construct(string $sourceFile, OmUnit $width, OmUnit $height)
+    public function __construct(string $sourceFile, ?OmUnit $width = null, ?OmUnit $height = null)
     {
         $this->sourceFile = $sourceFile;
-        $this->width = $width;
-        $this->height = $height;
+
+        $im = new Imagick($this->sourceFile);
+
+        $this->width = $width ?? ($height
+                ? OmUnit::create(OmUnit::UNIT_PIXELS, $height->getValue() * ($im->getImageWidth() / $im->getImageHeight()))
+                : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageWidth())
+            );
+        $this->height = $height ?? ($width
+                ? OmUnit::create(OmUnit::UNIT_PIXELS, $width->getValue() * ($im->getImageHeight() / $im->getImageWidth()))
+                : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageHeight())
+            );
+
+        $im->destroy();
     }
 
     /**
@@ -33,10 +44,9 @@ class OmElementImage implements OmElementInterface
     {
         $im = new Imagick($this->sourceFile);
         $im->transformImageColorspace(OmCanvas::getImagickColorSpace($colorSpace));
-
         $im->resizeImage(
-            $this->getWidth()->toPixel($resolution),
-            $this->getHeight()->toPixel($resolution),
+            $this->width->toPixel($resolution),
+            $this->height->toPixel($resolution),
             imagick::FILTER_HAMMING,
             1);
 
@@ -48,7 +58,7 @@ class OmElementImage implements OmElementInterface
      */
     public function getWidth(): OmUnit
     {
-        return $this->width;
+        return OmUnit::create($this->width->getUnit(), $this->width->getValue());
     }
 
     /**
@@ -56,6 +66,6 @@ class OmElementImage implements OmElementInterface
      */
     public function getHeight(): OmUnit
     {
-        return $this->height;
+        return OmUnit::create($this->height->getUnit(), $this->height->getValue());
     }
 }
