@@ -36,8 +36,9 @@ class OmUnit
     public function __construct(string $unit, float $value = 0)
     {
         $unitConstant = self::stringToConstant($unit);
-        if (!$unitConstant)
+        if (!$unitConstant) {
             throw new OmUnitUnknownException('Unit unknown.');
+        }
 
         $this->unit = $unit;
         $this->value = $value;
@@ -52,8 +53,9 @@ class OmUnit
     public static function create(string $unitName, float $value): ?OmUnit
     {
         $unitConstant = self::stringToConstant($unitName);
-        if (!$unitConstant)
+        if (!$unitConstant) {
             return null;
+        }
 
         try {
             return new OmUnit($unitName, $value);
@@ -84,8 +86,9 @@ class OmUnit
             'pt' => self::UNIT_POINTS
         ];
 
-        if (isset($units[$unitName]))
+        if (isset($units[$unitName])) {
             return $units[$unitName];
+        }
 
         return null;
     }
@@ -148,27 +151,35 @@ class OmUnit
 
     public function toPixel(int $resolution): int
     {
-        if ($this->unit == 'auto')
+        if ($this->unit == 'auto') {
             return -1;
+        }
 
         switch ($this->unit) {
+            default:
+                trigger_error('Unknown resolution.', E_USER_ERROR);
             case self::UNIT_PIXELS:
-                return $this->value;
+                $pixelValue = $this->value;
+                break;
             case self::UNIT_CENTIMETERS:
-                return $this->value * ($resolution / 2.54);
+                $pixelValue = $this->value * ($resolution / 2.54);
+                break;
             case self::UNIT_MILLIMETERS:
-                return $this->value / 10 * ($resolution / 2.54);
+                $pixelValue = $this->value / 10 * ($resolution / 2.54);
+                break;
             case self::UNIT_POINTS:
-                return $this->value * ($resolution / 72);
+                $pixelValue = $this->value * ($resolution / 72);
+                break;
         }
-        trigger_error('Unknown resolution.', E_USER_ERROR);
-        return -1;
+
+        return (int)$pixelValue;
     }
 
     public function __toString()
     {
-        if ($this->unit == 'auto')
+        if ($this->unit == 'auto') {
             return 'auto';
+        }
 
         return $this->getValue() . $this->getUnit();
     }
