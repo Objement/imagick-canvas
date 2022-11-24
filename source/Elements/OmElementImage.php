@@ -41,18 +41,32 @@ class OmElementImage implements OmElementInterface
     private function fixRotationDependingOnExifData(Imagick $im)
     {
         switch ($im->getImageOrientation()) {
+            default:
+            case imagick::ORIENTATION_TOPLEFT:
+                break;
+            case imagick::ORIENTATION_TOPRIGHT:
+                $im->flipImage();
+                $im->rotateImage("#000", 180);
+                break;
             case imagick::ORIENTATION_BOTTOMRIGHT:
                 $im->rotateImage("#000", 180);
                 break;
-
+            case imagick::ORIENTATION_BOTTOMLEFT:
+                $im->flipImage();
+                break;
+            case imagick::ORIENTATION_LEFTTOP:
+                $im->rotateImage("#000", -90);
+                $im->flipImage();
+                break;
             case imagick::ORIENTATION_RIGHTTOP:
                 $im->rotateImage("#000", 90);
                 break;
-
+            case imagick::ORIENTATION_RIGHTBOTTOM:
+                $im->rotateImage("#000", 90);
+                $im->flipImage();
+                break;
             case imagick::ORIENTATION_LEFTBOTTOM:
                 $im->rotateImage("#000", -90);
-                break;
-            default:
                 break;
         }
 
