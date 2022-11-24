@@ -24,17 +24,39 @@ class OmElementImage implements OmElementInterface
         $this->sourceFile = $sourceFile;
 
         $im = new Imagick($this->sourceFile);
+        $this->fixRotationDependingOnExifData($im);
 
         $this->width = $width ?? ($height
-                ? OmUnit::create(OmUnit::UNIT_PIXELS, $height->getValue() * ($im->getImageWidth() / $im->getImageHeight()))
-                : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageWidth())
-            );
+            ? OmUnit::create(OmUnit::UNIT_PIXELS, $height->getValue() * ($im->getImageWidth() / $im->getImageHeight()))
+            : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageWidth())
+        );
         $this->height = $height ?? ($width
-                ? OmUnit::create(OmUnit::UNIT_PIXELS, $width->getValue() * ($im->getImageHeight() / $im->getImageWidth()))
-                : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageHeight())
-            );
+            ? OmUnit::create(OmUnit::UNIT_PIXELS, $width->getValue() * ($im->getImageHeight() / $im->getImageWidth()))
+            : OmUnit::create(OmUnit::UNIT_PIXELS, $im->getImageHeight())
+        );
 
         $im->destroy();
+    }
+
+    private function fixRotationDependingOnExifData(Imagick $im)
+    {
+        switch ($im->getImageOrientation()) {
+            case imagick::ORIENTATION_BOTTOMRIGHT:
+                $im->rotateImage("#000", 180);
+                break;
+
+            case imagick::ORIENTATION_RIGHTTOP:
+                $im->rotateImage("#000", 90);
+                break;
+
+            case imagick::ORIENTATION_LEFTBOTTOM:
+                $im->rotateImage("#000", -90);
+                break;
+            default:
+                break;
+        }
+
+        $im->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
     }
 
     /**
@@ -48,7 +70,8 @@ class OmElementImage implements OmElementInterface
             $this->width->toPixel($resolution),
             $this->height->toPixel($resolution),
             imagick::FILTER_HAMMING,
-            1);
+            1
+        );
 
         return $im;
     }
